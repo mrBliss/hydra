@@ -80,14 +80,15 @@
 ;; This example introduces only one new thing: since the command
 ;; passed to the "q" head is nil, it will quit the Hydra without doing
 ;; anything. Heads that quit the Hydra instead of continuing are
-;; referred to as having blue :color. All the other heads have red
-;; :color, unless other is specified.
+;; referred to as having :exit t property. All the other heads have
+;; :exit nil property , unless other is specified.
+
 
 ;;** Example 4: toggle rarely used modes
 (when (bound-and-true-p hydra-examples-verbatim)
   (global-set-key
    (kbd "C-c C-v")
-   (defhydra hydra-toggle (:color blue)
+   (defhydra hydra-toggle (:exit t)
      "toggle"
      ("a" abbrev-mode "abbrev")
      ("d" toggle-debug-on-error "debug")
@@ -103,8 +104,9 @@
 ;; skipped.  This means that `defhydra' will bind nothing - that's why
 ;; `global-set-key' is necessary.
 ;;
-;; One more new thing is that you can assign a :color to the body. All
-;; heads will inherit this color. The code above is very much equivalent to:
+;; One more new thing is that you can assign a :exit t to the
+;; body. All heads will inherit this property. The code above is very
+;; much equivalent to:
 ;;
 ;;     (global-set-key (kbd "C-c C-v a") 'abbrev-mode)
 ;;     (global-set-key (kbd "C-c C-v d") 'toggle-debug-on-error)
@@ -126,7 +128,9 @@
 (when (bound-and-true-p hydra-examples-verbatim)
   (global-set-key
    (kbd "C-z")
-   (defhydra hydra-vi (:pre hydra-vi/pre :post hydra-vi/post :color amaranth)
+   (defhydra hydra-vi (:pre hydra-vi/pre
+                       :post hydra-vi/post
+                       :nonheads warn)
      "vi"
      ("l" forward-char)
      ("h" backward-char)
@@ -135,8 +139,8 @@
      ("m" set-mark-command "mark")
      ("a" move-beginning-of-line "beg")
      ("e" move-end-of-line "end")
-     ("d" delete-region "del" :color blue)
-     ("y" kill-ring-save "yank" :color blue)
+     ("d" delete-region "del" :exit t)
+     ("y" kill-ring-save "yank" :exit t)
      ("q" nil "quit"))))
 
 ;; This example introduces :color amaranth. It's similar to red,
@@ -162,7 +166,7 @@
 ;; You can still "C-x `jjk" though.
 ;;** Example 7: toggle with Ruby-style docstring
 (when (bound-and-true-p hydra-examples-verbatim)
-  (defhydra hydra-toggle (:color pink)
+  (defhydra hydra-toggle (:nonheads run)
     "
 _a_ abbrev-mode:       %`abbrev-mode
 _d_ debug-on-error:    %`debug-on-error
